@@ -6,19 +6,19 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
-//роуты
+// роуты
 const usersRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
-//дружим
+// дружим
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   family: 4
 });
-//извлекаем тело ответа
+// извлекаем тело ответа
 app.use(bodyParser.json());
 
-//хардкодим id пользователя ????
+// хардкодим id пользователя ????
 app.use((req, res, next) => {
   req.user = {
     _id: '6498ef4a7f96cf0c9aec11f1'
@@ -26,9 +26,9 @@ app.use((req, res, next) => {
   next();
 });
 
-//слушаем роуты
-app.use("/users", usersRouter);
-app.use("/cards", cardRouter);
+// слушаем роуты
+app.use('/users', usersRouter);
+app.use('/cards', cardRouter);
 
 app.listen(PORT, () => {
   console.log(`Сервер запущен. Порт:${PORT}`)

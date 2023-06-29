@@ -1,12 +1,12 @@
 const Card = require('../models/card');
 
-//создаем карточку
+// создаем карточку
 const createCard = (req, res) => {
   console.log(req.body);
 
   const { name, link } = req.body;
 
-  const owner = req.user._id;//id пользователя
+  const owner = req.user._id;// id пользователя
 
   Card.create({ name, link, owner })
     .then((card) => {
@@ -17,7 +17,7 @@ const createCard = (req, res) => {
     })
 };
 
-//запрашиваем все карточки
+// запрашиваем все карточки
 const getCards = (req, res) => {
 
   Card.find({})
@@ -30,7 +30,7 @@ const getCards = (req, res) => {
     })
 };
 
-//удаляем карточку по id
+// удаляем карточку по id
 const deleteCard = (req, res) => {
 
   const { id } = req.params;
