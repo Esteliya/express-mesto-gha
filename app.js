@@ -13,7 +13,7 @@ const cardRouter = require('./routes/cards');
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  family: 4
+  family: 4,
 });
 // извлекаем тело ответа
 app.use(bodyParser.json());
@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 // хардкодим id пользователя ????
 app.use((req, res, next) => {
   req.user = {
-    _id: '6498ef4a7f96cf0c9aec11f1'
+    _id: '6498ef4a7f96cf0c9aec11f1',
   };
   next();
 });
@@ -31,5 +31,5 @@ app.use('/users', usersRouter);
 app.use('/cards', cardRouter);
 
 app.listen(PORT, () => {
-  console.log(`Сервер запущен. Порт:${PORT}`)
+  console.log(`Сервер запущен. Порт:${PORT}`);
 });
