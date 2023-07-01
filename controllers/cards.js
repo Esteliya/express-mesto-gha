@@ -1,16 +1,17 @@
-const Card = require('../models/card');
 const mongoose = require('mongoose');
+const Card = require('../models/card');
 
 // создаем карточку
 const createCard = (req, res) => {
   console.log(req.body);
   const { name, link } = req.body;
   const owner = req.user._id;// id пользователя
+
   // проверяем, заполнены ли поля карточки
   if (!name || !link) {
     res.status(400).send({ message: 'Обязательные поля не заполнены' });
     return;
-  }
+  };
   Card.create({ name, link, owner })
     .then((card) => {
       res.send({ data: card });
@@ -19,8 +20,9 @@ const createCard = (req, res) => {
       if (err instanceof mongoose.Error.ValidationError) {
         res.status(400).send({ message: 'Невалидные данные' });
         return;
-      }
-      res.status(500).send(err);
+      } else {
+        res.status(500).send(err.message);
+      };
     });
 };
 
@@ -32,19 +34,25 @@ const getCards = (req, res) => {
       res.send({ data: card });
     })
     .catch((err) => {
-      res.status(500).send(err);
+      res.status(500).send(err.message);
     });
 };
 
 // удаляем карточку по id
 const deleteCard = (req, res) => {
   const { id } = req.params;
+  console.log(id);
   Card.findByIdAndRemove(id)
     .then((card) => {
-      console.log(`Удалили карточку ${card.name} с ID: ${id}`);
+      if (!card) {
+        res.status(404).send({ message: 'Карточка не найдена' });
+        return;
+      }
+      res.send({ message: 'Карточка успешно удалена' });
+      return;
     })
     .catch((err) => {
-      res.status(500).send(err);
+      res.status(500).send(err.message);
     });
 };
 
@@ -60,7 +68,7 @@ const likeCard = (req, res) => {
       res.send({ data: card });
     })
     .catch((err) => {
-      res.status(500).send(err);
+      res.status(500).send(err.message);
     });
 };
 
@@ -76,7 +84,7 @@ const deleteLikeCard = (req, res) => {
       res.send({ data: card });
     })
     .catch((err) => {
-      res.status(500).send(err);
+      res.status(500).send(err).message;
     });
 };
 
@@ -86,5 +94,5 @@ module.exports = {
   getCards,
   deleteCard,
   likeCard,
-  deleteLikeCard
+  deleteLikeCard,
 };

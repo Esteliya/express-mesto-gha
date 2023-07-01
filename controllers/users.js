@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const User = require('../models/user');
 
 // создаем пользователя
@@ -5,13 +6,22 @@ const createUser = (req, res) => {
   console.log(req.body);
 
   const { name, about, avatar } = req.body;
-
+  // проверяем, заполнены ли поля создания пользователя
+  if (!name || !about || !avatar) {
+    res.status(400).send({ message: 'Обязательные поля не заполнены' });
+    return;
+  };
   User.create({ name, about, avatar })
     .then((user) => {
       res.send(user)
     })
     .catch((err) => {
-      res.status(404).send(err);
+      if (err instanceof mongoose.Error.ValidationError) {
+        res.status(400).send({ message: 'Невалидные данные' });
+        return;
+      } else {
+        res.status(500).send(err.message);
+      };
     })
 };
 
@@ -22,7 +32,7 @@ const getUsers = (req, res) => {
       res.send(users)
     })
     .catch((err) => {
-      res.status(500).send(err);
+      res.status(500).send(err.message);
     })
 }
 
@@ -34,10 +44,14 @@ const getUser = (req, res) => {
 
   User.findById(id)
     .then((user) => {
-      res.send({ data: user })
+      if (!user) {
+        res.status(404).send({ message: 'Ползователь не найден' });
+      } else {
+        res.send({ data: user })
+      };
     })
     .catch((err) => {
-      res.status(500).send(err);
+      res.status(500).send(err.message);
     })
 }
 
@@ -49,10 +63,14 @@ const updateUser = (req, res) => {
 
   User.findByIdAndUpdate(id, { name, about }, { new: true })
     .then(({ name, about }) => {
-      console.log(`Данные пользователя изменены: имя:${name} о себе: ${about}`);
+      if (!name || !about) {
+        res.status(400).send({ message: 'Невалидные данные' });
+      } else{
+        res.send(`Обновленные данные: ${ name, about }`);
+      };
     })
     .catch((err) => {
-      res.status(500).send(err);
+      res.status(500).send(err.message);
     })
 }
 
@@ -61,11 +79,15 @@ const updateAvatar = (req, res) => {
   const id = req.user._id;
   const { avatar } = req.body;
   User.findByIdAndUpdate(id, { avatar }, { new: true })
-    .then((avatar) => {
-      console.log(`Аватар пользователя изменен:${avatar}`);
+    .then(({avatar}) => {
+      if (!avatar) {
+        res.status(400).send({ message: 'Невалидные данные' });
+      } else{
+        res.send(`Обновили аватар: ${ avatar }`);
+      };
     })
     .catch((err) => {
-      res.status(500).send(err);
+      res.status(500).send(err.message);
     })
 }
 
@@ -74,5 +96,5 @@ module.exports = {
   getUsers,
   getUser,
   updateUser,
-  updateAvatar
+  updateAvatar,
 };
