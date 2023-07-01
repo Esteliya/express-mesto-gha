@@ -63,11 +63,11 @@ const updateUser = (req, res) => {
         res.status(400).send({ message: 'Невалидные данные' });
       } else {
         res.send(`Обновленные данные: ${name} ${about}`);
-      };
+      }
     })
     .catch((err) => {
       res.status(500).send(err.message);
-    })
+    });
 };
 
 // обновляем аватар пользователя
@@ -75,11 +75,11 @@ const updateAvatar = (req, res) => {
   const id = req.user._id;
   const { avatar } = req.body;
   User.findByIdAndUpdate(id, { avatar }, { new: true })
-    .then(({avatar}) => {
+    .then(({ avatar }) => {
       if (!avatar) {
         res.status(400).send({ message: 'Невалидные данные' });
       } else {
-        res.send(`Обновили аватар: ${ avatar }`);
+        res.send(`Обновили аватар: ${avatar}`);
       };
     })
     .catch((err) => {
