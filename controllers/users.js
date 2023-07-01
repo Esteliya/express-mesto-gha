@@ -90,7 +90,7 @@ const updateAvatar = (req, res) => {
         res.status(400).send({ message: 'Введены некорректные данные' });
       } else {
         res.status(500).send(err.message);
-      };
+      }
     });
 };
 

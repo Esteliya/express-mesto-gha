@@ -91,7 +91,7 @@ const deleteLikeCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Введены некорректные данные' });
+        res.status(400).send({ message: 'Введены некорректные данные' });
       } else {
         res.status(500).send(err.message);
       }
