@@ -12,4 +12,5 @@ router.put('/:id/likes', likeCard);
 // роут удаления лайка карточки
 router.delete('/:id/likes', deleteLikeCard);
 
+// экспорт
 module.exports = router;

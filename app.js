@@ -18,7 +18,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 // извлекаем тело ответа
 app.use(bodyParser.json());
 
-// хардкодим id пользователя ????
+// хардкодим id пользователя
 app.use((req, res, next) => {
   req.user = {
     _id: '6498ef4a7f96cf0c9aec11f1',
