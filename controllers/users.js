@@ -38,9 +38,7 @@ const getUsers = (req, res) => {
 
 // запрашиваем пользователя по id
 const getUser = (req, res) => {
-
   const { id } = req.params;
-
   User.findById(id)
     .then((user) => {
       if (!user) {
@@ -59,19 +57,18 @@ const updateUser = (req, res) => {
   const id = req.user._id;
   const { name, about } = req.body;
   console.log(id);// ловит нужный id
-
   User.findByIdAndUpdate(id, { name, about }, { new: true })
-    .then(( {name, about} ) => {
+    .then(({ name, about }) => {
       if (!name || !about) {
         res.status(400).send({ message: 'Невалидные данные' });
-      } else{
-        res.send(`Обновленные данные: ${ name } ${ about }`);
+      } else {
+        res.send(`Обновленные данные: ${name} ${about}`);
       };
     })
     .catch((err) => {
       res.status(500).send(err.message);
     })
-}
+};
 
 // обновляем аватар пользователя
 const updateAvatar = (req, res) => {
@@ -81,14 +78,14 @@ const updateAvatar = (req, res) => {
     .then(({avatar}) => {
       if (!avatar) {
         res.status(400).send({ message: 'Невалидные данные' });
-      } else{
+      } else {
         res.send(`Обновили аватар: ${ avatar }`);
       };
     })
     .catch((err) => {
       res.status(500).send(err.message);
     })
-}
+};
 
 module.exports = {
   createUser,
