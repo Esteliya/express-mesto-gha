@@ -11,7 +11,7 @@ const createCard = (req, res) => {
   if (!name || !link) {
     res.status(400).send({ message: 'Обязательные поля не заполнены' });
     return;
-  };
+  }
   Card.create({ name, link, owner })
     .then((card) => {
       res.send({ data: card });
@@ -19,10 +19,9 @@ const createCard = (req, res) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         res.status(400).send({ message: 'Невалидные данные' });
-        return;
       } else {
         res.status(500).send(err.message);
-      };
+      }
     });
 };
 
@@ -49,7 +48,6 @@ const deleteCard = (req, res) => {
         return;
       }
       res.send({ message: 'Карточка успешно удалена' });
-      return;
     })
     .catch((err) => {
       res.status(500).send(err.message);
@@ -84,7 +82,7 @@ const deleteLikeCard = (req, res) => {
       res.send({ data: card });
     })
     .catch((err) => {
-      res.status(500).send(err).message;
+      res.status(500).send(err.message);
     });
 };
 

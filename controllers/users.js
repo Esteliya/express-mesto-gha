@@ -10,19 +10,18 @@ const createUser = (req, res) => {
   if (!name || !about || !avatar) {
     res.status(400).send({ message: 'Обязательные поля не заполнены' });
     return;
-  };
+  }
   User.create({ name, about, avatar })
     .then((user) => {
-      res.send(user)
+      res.send(user);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         res.status(400).send({ message: 'Невалидные данные' });
-        return;
       } else {
         res.status(500).send(err.message);
-      };
-    })
+      }
+    });
 };
 
 // запрашиваем список всех пользователей
