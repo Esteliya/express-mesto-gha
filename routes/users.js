@@ -13,9 +13,9 @@ router.post('/', createUser);
 router.get('/', getUsers);
 // роут запроса пользователя по id
 router.get('/:id', getUser);
-// роут обновления данных пользователя
+// роут изменения данных пользователя
 router.patch('/me', updateUser);
-// роут обновления аватара пользователя
+// роут изменения аватара пользователя
 router.patch('/me/avatar', updateAvatar);
 
 module.exports = router;
