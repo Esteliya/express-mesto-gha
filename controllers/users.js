@@ -28,12 +28,12 @@ const createUser = (req, res) => {
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => {
-      res.send(users)
+      res.send(users);
     })
     .catch((err) => {
       res.status(500).send(err.message);
-    })
-}
+    });
+};
 
 
 // запрашиваем пользователя по id
@@ -46,13 +46,13 @@ const getUser = (req, res) => {
       if (!user) {
         res.status(404).send({ message: 'Ползователь не найден' });
       } else {
-        res.send({ data: user })
-      };
+        res.send({ data: user });
+      }
     })
     .catch((err) => {
       res.status(500).send(err.message);
-    })
-}
+    });
+};
 
 // обновляем данные пользователя
 const updateUser = (req, res) => {
@@ -61,11 +61,11 @@ const updateUser = (req, res) => {
   console.log(id);// ловит нужный id
 
   User.findByIdAndUpdate(id, { name, about }, { new: true })
-    .then(({ name, about }) => {
+    .then(( {name, about} ) => {
       if (!name || !about) {
         res.status(400).send({ message: 'Невалидные данные' });
       } else{
-        res.send(`Обновленные данные: ${ name, about }`);
+        res.send(`Обновленные данные: ${ name } ${ about }`);
       };
     })
     .catch((err) => {
