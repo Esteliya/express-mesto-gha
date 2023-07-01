@@ -24,7 +24,7 @@ const cardSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now(),
-  }
+  },
 });
 const Card = mongoose.model('card', cardSchema);
 

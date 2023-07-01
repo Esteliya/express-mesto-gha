@@ -3,7 +3,6 @@ const Card = require('../models/card');
 
 // создаем карточку
 const createCard = (req, res) => {
-  console.log(req.body);
   const { name, link } = req.body;
   const owner = req.user._id;// id пользователя
 
@@ -40,11 +39,10 @@ const getCards = (req, res) => {
 // удаляем карточку по id
 const deleteCard = (req, res) => {
   const { id } = req.params;
-  console.log(id);
   Card.findByIdAndRemove(id)
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Карточка не найдена' });
+        res.status(400).send({ message: 'Карточка не найдена' });
         return;
       }
       res.send({ message: 'Карточка успешно удалена' });
@@ -54,7 +52,7 @@ const deleteCard = (req, res) => {
         res.status(400).send({ message: 'Введены некорректные данные' });
       } else {
         res.status(500).send(err.message);
-      };
+      }
     });
 };
 
@@ -62,23 +60,20 @@ const deleteCard = (req, res) => {
 const likeCard = (req, res) => {
   const { id } = req.params;
   const idUser = req.user._id;
-  console.log(`id: ${id}`);
-  console.log(`idUser: ${idUser}`);
   Card.findByIdAndUpdate(id, { $addToSet: { likes: idUser } }, { new: true })
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Карточки с таким ID не существует' });
       } else {
-        console.log(`Поставили лайк карточке ${card.name} с ID: ${id}`);
         res.send({ data: card });
-      };
+      }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Введены некорректные данные' });
       } else {
         res.status(500).send(err.message);
-      };
+      }
     });
 };
 
@@ -86,23 +81,20 @@ const likeCard = (req, res) => {
 const deleteLikeCard = (req, res) => {
   const { id } = req.params;
   const idUser = req.user._id;
-  console.log(`id: ${id}`);
-  console.log(`idUser: ${idUser}`);
   Card.findByIdAndUpdate(id, { $pull: { likes: idUser } }, { new: true })
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Карточки с таким ID не существует' });
       } else {
-        console.log(`Удалили лайк карточки ${card.name} с ID: ${id}`);
         res.send({ data: card });
-      };
+      }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(404).send({ message: 'Введены некорректные данные' });
       } else {
         res.status(500).send(err.message);
-      };
+      }
     });
 };
 

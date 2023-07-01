@@ -30,6 +30,4 @@ app.use((req, res, next) => {
 app.use('/users', usersRouter);
 app.use('/cards', cardRouter);
 
-app.listen(PORT, () => {
-  console.log(`Сервер запущен. Порт:${PORT}`);
-});
+app.listen(PORT);
