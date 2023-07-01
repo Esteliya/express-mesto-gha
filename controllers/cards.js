@@ -50,7 +50,11 @@ const deleteCard = (req, res) => {
       res.send({ message: 'Карточка успешно удалена' });
     })
     .catch((err) => {
-      res.status(500).send(err.message);
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Введены некорректные данные' });
+      } else {
+        res.status(500).send(err.message);
+      };
     });
 };
 
@@ -62,11 +66,19 @@ const likeCard = (req, res) => {
   console.log(`idUser: ${idUser}`);
   Card.findByIdAndUpdate(id, { $addToSet: { likes: idUser } }, { new: true })
     .then((card) => {
-      console.log(`Поставили лайк карточке ${card.name} с ID: ${id}`);
-      res.send({ data: card });
+      if (!card) {
+        res.status(404).send({ message: 'Карточки с таким ID не существует' });
+      } else {
+        console.log(`Поставили лайк карточке ${card.name} с ID: ${id}`);
+        res.send({ data: card });
+      };
     })
     .catch((err) => {
-      res.status(500).send(err.message);
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Введены некорректные данные' });
+      } else {
+        res.status(500).send(err.message);
+      };
     });
 };
 
@@ -78,11 +90,19 @@ const deleteLikeCard = (req, res) => {
   console.log(`idUser: ${idUser}`);
   Card.findByIdAndUpdate(id, { $pull: { likes: idUser } }, { new: true })
     .then((card) => {
-      console.log(`Удалили лайк карточки ${card.name} с ID: ${id}`);
-      res.send({ data: card });
+      if (!card) {
+        res.status(404).send({ message: 'Карточки с таким ID не существует' });
+      } else {
+        console.log(`Удалили лайк карточки ${card.name} с ID: ${id}`);
+        res.send({ data: card });
+      };
     })
     .catch((err) => {
-      res.status(500).send(err.message);
+      if (err.name === 'CastError') {
+        res.status(404).send({ message: 'Введены некорректные данные' });
+      } else {
+        res.status(500).send(err.message);
+      };
     });
 };
 

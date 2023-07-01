@@ -4,13 +4,12 @@ const User = require('../models/user');
 // создаем пользователя
 const createUser = (req, res) => {
   console.log(req.body);
-
   const { name, about, avatar } = req.body;
   // проверяем, заполнены ли поля создания пользователя
   if (!name || !about || !avatar) {
     res.status(400).send({ message: 'Обязательные поля не заполнены' });
     return;
-  }
+  };
   User.create({ name, about, avatar })
     .then((user) => {
       res.send(user);
@@ -20,7 +19,7 @@ const createUser = (req, res) => {
         res.status(400).send({ message: 'Невалидные данные' });
       } else {
         res.status(500).send(err.message);
-      }
+      };
     });
 };
 
@@ -45,10 +44,14 @@ const getUser = (req, res) => {
         res.status(404).send({ message: 'Ползователь не найден' });
       } else {
         res.send({ data: user });
-      }
+      };
     })
     .catch((err) => {
-      res.status(500).send(err.message);
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Введен некорректный ID' });
+      } else {
+        res.status(500).send(err);
+      };
     });
 };
 
@@ -57,16 +60,19 @@ const updateUser = (req, res) => {
   const id = req.user._id;
   const { name, about } = req.body;
   console.log(id);// ловит нужный id
-  User.findByIdAndUpdate(id, { name, about }, { new: true })
-    .then(({ name, about }) => {
-      if (!name || !about) {
-        res.status(400).send({ message: 'Невалидные данные' });
-      } else {
-        res.send(`Обновленные данные: ${name} ${about}`);
+  User.findByIdAndUpdate(id, { name, about }, { new: true, runValidators: true })
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: 'Польззователь не найден' });
       }
+      res.send(user);
     })
     .catch((err) => {
-      res.status(500).send(err.message);
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(400).send({ message: 'Введены некорректные данные' });
+      } else {
+        res.status(500).send(err.message);
+      };
     });
 };
 
@@ -79,12 +85,12 @@ const updateAvatar = (req, res) => {
       if (!avatar) {
         res.status(400).send({ message: 'Невалидные данные' });
       } else {
-        res.send(`Обновили аватар: ${avatar}`);
+        res.send(user);
       };
     })
     .catch((err) => {
       res.status(500).send(err.message);
-    })
+    });
 };
 
 module.exports = {
