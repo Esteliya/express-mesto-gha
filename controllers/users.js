@@ -11,7 +11,7 @@ const createUser = (req, res) => {
   }
   User.create({ name, about, avatar })
     .then((user) => {
-      res.send(user);
+      res.status(201).send(user);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
@@ -48,7 +48,7 @@ const getUser = (req, res) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Введен некорректный ID' });
       } else {
-        res.status(500).send(err);
+        res.status(500).send(err.message);
       }
     });
 };

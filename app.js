@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
-const { PORT = 3000 } = process.env;
+// порт + БД в отдельной env переменной
+const { PORT = 3000, DB_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 
 const app = express();
 
@@ -10,7 +10,7 @@ const app = express();
 const usersRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 // дружим
-mongoose.connect('mongodb://localhost:27017/mestodb', {
+mongoose.connect(DB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   family: 4,

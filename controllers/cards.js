@@ -13,7 +13,7 @@ const createCard = (req, res) => {
   }
   Card.create({ name, link, owner })
     .then((card) => {
-      res.send({ data: card });
+      res.status(201).send({ data: card });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
