@@ -40,15 +40,14 @@ const getCards = (req, res) => {
 const deleteCard = (req, res) => {
   const { id } = req.params;
   Card.findByIdAndRemove(id)
+    .orFail(() => Error('NotValidId'))
     .then((card) => {
-      if (!card) {
-        res.status(404).send({ message: 'Карточка не найдена' });
-        return;
-      }
       res.send({ message: 'Карточка успешно удалена' });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'NotValidId') {
+        res.status(404).send({ message: 'Карточки с таким ID не существует' });
+      } else if (err.name === 'CastError') {
         res.status(400).send({ message: 'Введены некорректные данные' });
       } else {
         res.status(500).send(err.message);
@@ -61,15 +60,14 @@ const likeCard = (req, res) => {
   const { id } = req.params;
   const idUser = req.user._id;
   Card.findByIdAndUpdate(id, { $addToSet: { likes: idUser } }, { new: true })
+    .orFail(() => Error('NotValidId'))
     .then((card) => {
-      if (!card) {
-        res.status(404).send({ message: 'Карточки с таким ID не существует' });
-      } else {
-        res.send({ data: card });
-      }
+      res.send({ data: card });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'NotValidId') {
+        res.status(404).send({ message: 'Карточки с таким ID не существует' });
+      } else if (err.name === 'CastError') {
         res.status(400).send({ message: 'Введены некорректные данные' });
       } else {
         res.status(500).send(err.message);
@@ -82,15 +80,14 @@ const deleteLikeCard = (req, res) => {
   const { id } = req.params;
   const idUser = req.user._id;
   Card.findByIdAndUpdate(id, { $pull: { likes: idUser } }, { new: true })
+    .orFail(() => Error('NotValidId'))
     .then((card) => {
-      if (!card) {
-        res.status(404).send({ message: 'Карточки с таким ID не существует' });
-      } else {
-        res.send({ data: card });
-      }
+      res.send({ data: card });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'NotValidId') {
+        res.status(404).send({ message: 'Карточки с таким ID не существует' });
+      } else if (err.name === 'CastError') {
         res.status(400).send({ message: 'Введены некорректные данные' });
       } else {
         res.status(500).send(err.message);
