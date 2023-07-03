@@ -41,7 +41,7 @@ const deleteCard = (req, res) => {
   const { id } = req.params;
   Card.findByIdAndRemove(id)
     .orFail(() => Error('NotValidId'))
-    .then((card) => {
+    .then(() => {
       res.send({ message: 'Карточка успешно удалена' });
     })
     .catch((err) => {
