@@ -1,10 +1,13 @@
 const express = require('express');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 // порт + БД в отдельной env переменной
 const { PORT = 3000, DB_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 
 const app = express();
+// защищаем приложение, применяя библиотеку Helmet (установка: npm i helmet)
+app.use(helmet());
 
 // роуты
 const usersRouter = require('./routes/users');
