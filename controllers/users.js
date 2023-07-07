@@ -5,7 +5,7 @@ const User = require('../models/user');
 const createUser = (req, res) => {
   const { name, about, avatar, email, password } = req.body;
   // проверяем, заполнены ли поля создания пользователя
-  if (!name || !about || !avatar || !email || !password ) {
+  if (!email || !password ) {
     res.status(400).send({ message: 'Обязательные поля не заполнены' });
     return;
   }
