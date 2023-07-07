@@ -1,15 +1,21 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 // создаем пользователя
 const createUser = (req, res) => {
   const { name, about, avatar, email, password } = req.body;
   // проверяем, заполнены ли поля создания пользователя
-  if (!email || !password ) {
+  if (!email || !password) {
     res.status(400).send({ message: 'Обязательные поля не заполнены' });
     return;
   }
-  User.create({ name, about, avatar, email, password })
+  //хэшируем пароль
+  bcrypt.hash(req.body.password, 10)
+    .then(hash => User.create({
+      email: req.body.email,
+      password: hash,
+    }))
     .then((user) => {
       res.status(201).send(user);
     })
