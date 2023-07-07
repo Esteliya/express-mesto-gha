@@ -3,19 +3,19 @@ const User = require('../models/user');
 
 // создаем пользователя
 const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const { name, about, avatar, email, password } = req.body;
   // проверяем, заполнены ли поля создания пользователя
-  if (!name || !about || !avatar) {
+  if (!name || !about || !avatar || !email || !password ) {
     res.status(400).send({ message: 'Обязательные поля не заполнены' });
     return;
   }
-  User.create({ name, about, avatar })
+  User.create({ name, about, avatar, email, password })
     .then((user) => {
       res.status(201).send(user);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        res.status(400).send({ message: 'Невалидные данные' });
+        res.status(400).send(err);
       } else {
         res.status(500).send(err.message);
       }
@@ -45,7 +45,7 @@ const getUser = (req, res) => {
       if (err.message === 'NotValidId') {
         res.status(404).send({ message: 'Ползователь не найден' });
       } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Введен некорректный ID' });
+        res.status(400).send(err);
       } else {
         res.status(500).send(err);
       }

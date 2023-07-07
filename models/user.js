@@ -23,6 +23,22 @@ const userSchema = new mongoose.Schema(
         message: 'Некорректный URL',
       },
     },
+    email: {
+      type: String,
+      required: [true, 'Поле "email" должно быть заполнено'],
+      validate: {
+        validator: (v) => validator.isEmail(v),
+        message: 'Некорректный URL',
+      },
+    },
+    password: {
+      type: String,
+      required: [true, 'Поле "password" должно быть заполнено'],
+      validate: {
+        validator: (v) => validator.isStrongPassword(v),
+        message: 'Ненадежный пароль. Пароль должен быль не менее 8 символов и содержать цифру, прописную и строчную буквы.',
+      },
+    },
   },
   { versionKey: false },
 );
