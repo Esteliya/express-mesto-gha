@@ -12,6 +12,7 @@ app.use(helmet());
 // роуты
 const usersRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
+const { login, createUser } = require('./controllers/users');
 // дружим
 mongoose.connect(DB_URL, {
   useNewUrlParser: true,
@@ -32,6 +33,10 @@ app.use((req, res, next) => {
 // слушаем роуты
 app.use('/users', usersRouter);
 app.use('/cards', cardRouter);
+
+// роуты регистрации и авторизации
+app.post('/signin', login);
+app.post('/signup', createUser);
 
 app.use('/*', (req, res) => {
   res.status(404).send({ message: 'Страницы не существует' });

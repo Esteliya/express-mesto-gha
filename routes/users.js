@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const {
-  createUser,
+  //createUser,
   getUsers,
   getUser,
   updateUser,
@@ -8,7 +8,7 @@ const {
 } = require('../controllers/users');
 
 // роут создания нового пользователя
-router.post('/', createUser);
+//router.post('/', createUser);
 // роут запроса всех пользователей
 router.get('/', getUsers);
 // роут запроса пользователя по id

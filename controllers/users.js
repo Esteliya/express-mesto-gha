@@ -127,4 +127,5 @@ module.exports = {
   getUser,
   updateUser,
   updateAvatar,
+  login,
 };
