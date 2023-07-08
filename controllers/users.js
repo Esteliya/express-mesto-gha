@@ -1,6 +1,29 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');//????
 const User = require('../models/user');
+
+//контроллер аутентификации
+const login = (req, res) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // авторизация успешна —> пользователь в переменной user
+      const token = jwt.sign(
+        { _id: user._id },
+        // секретный ключ — перенести!!!
+        'super-strong-secret',
+        // токен на 7 дней
+        { expiresIn: '7d' }
+      );
+      // ответ корректный —> записываем токен в httpOnly кук —> отправляем на фронт токен  ?????????
+      res.status(200).cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true }).send({ jwt: token });
+    })
+    .catch((err) => {
+      // ошибка аутентификации
+      res.status(401).send({ message: err.message });
+    });
+};
 
 // создаем пользователя
 const createUser = (req, res) => {
