@@ -3,7 +3,8 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 // порт + БД в отдельной env переменной
-const { PORT = 3000, DB_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
+// создаем новую БД, т.к. не отрабатывает проверка email на уникальность. Теперь ок. 
+const { PORT = 3000, DB_URL = 'mongodb://localhost:27017/mestodb_new' } = process.env;
 
 const app = express();
 // защищаем приложение, применяя библиотеку Helmet (установка: npm i helmet)
@@ -17,6 +18,7 @@ const { login, createUser } = require('./controllers/users');
 mongoose.connect(DB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  autoIndex: true,
   family: 4,
 });
 // извлекаем тело ответа
@@ -25,7 +27,7 @@ app.use(bodyParser.json());
 // хардкодим id пользователя
 app.use((req, res, next) => {
   req.user = {
-    _id: '6498ef4a7f96cf0c9aec11f1',
+    _id: '64aa010d9221495ad59171ba',
   };
   next();
 });

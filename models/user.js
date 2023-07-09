@@ -24,10 +24,11 @@ const userSchema = new mongoose.Schema(
         validator: (v) => validator.isURL(v),
         message: 'Некорректный URL',
       },
-      default: "https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png",
+      default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     },
     email: {
       type: String,
+      unique: true,
       required: [true, 'Поле "email" должно быть заполнено'],
       validate: {
         validator: (v) => validator.isEmail(v),
@@ -45,26 +46,12 @@ const userSchema = new mongoose.Schema(
   },
   { versionKey: false },
 );
-
-userSchema.statics.findUserByCredentials = function (email, password) {
-  // венем this (модель User)
-  return this.findOne({ email })
-    .then((user) => {
-      // нет такого пользователя — отклоняем
-      if (!user) {
-        return Promise.reject(new Error('Неверные почта или пароль'));
-      }
-      // пользователь найден — сравниваем хеши
-      return bcrypt.compare(password, user.password);
-    })
-    .then((matched) => {
-      if (!matched) {
-        return Promise.reject(new Error('Неверные почта или пароль'));
-      }
-      // пользователь авторизован
-      return user;
-    })
-};
+// удаляем поле password из результата выдачи
+userSchema.methods.toJSON = function() {
+  const user = this.toObject();
+  delete user.password;
+  return user;
+}
 
 const User = mongoose.model('user', userSchema);
 

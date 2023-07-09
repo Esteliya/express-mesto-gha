@@ -1,23 +1,36 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');//????
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 //контроллер аутентификации
 const login = (req, res) => {
   const { email, password } = req.body;
-  return User.findUserByCredentials(email, password)
+  User.findOne({ email })
+    .orFail(() => new Error('Введены некорректные данные'))
+    // если email существует в базе —> пользователь в переменной user
     .then((user) => {
-      // авторизация успешна —> пользователь в переменной user
-      const token = jwt.sign(
-        { _id: user._id },
-        // секретный ключ — перенести!!!
-        'super-strong-secret',
-        // токен на 7 дней
-        { expiresIn: '7d' }
-      );
-      // ответ корректный —> записываем токен в httpOnly кук —> отправляем на фронт токен  ?????????
-      res.status(200).cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true }).send({ jwt: token });
+      // проверяем пароль
+      bcrypt.compare(password, user.password)
+        .then((isValidUser) => {
+          if (isValidUser) {
+            // если валидный пароль —> получим пользователя
+            //res.status(200).send(user);
+
+            // если валидный пароль —> создадим jwt токен на 7 дней
+            const token = jwt.sign(
+              { _id: user._id },
+              // секретный ключ — перенести!!!
+              'super-strong-secret',
+              // токен на 7 дней
+              { expiresIn: '7d' }
+            );
+            // записываем токен в httpOnly кук —> отправляем на фронт токен
+            res.status(200).cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true, sameSite: true }).send(user);
+          } else {
+            res.status(403).send({ message: 'Введены некорректные данные' });
+          }
+        })
     })
     .catch((err) => {
       // ошибка аутентификации
@@ -33,10 +46,16 @@ const createUser = (req, res) => {
     res.status(400).send({ message: 'Обязательные поля не заполнены' });
     return;
   }
+  // проверим наличие email в базе - не работает последующее создание пользователя: в БД создается, сервер падает
+/*   User.findOne({ email })
+    .then(() => {
+      res.status(400).send({ message: 'Такой email уже зарегистрирован' });
+      return;
+    }) */
   //хэшируем пароль
-  bcrypt.hash(req.body.password, 10)
+  bcrypt.hash(password, 10)
     .then(hash => User.create({
-      email: req.body.email,
+      email: email,
       password: hash,
     }))
     .then((user) => {
