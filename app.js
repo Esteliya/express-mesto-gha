@@ -34,12 +34,12 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // хардкодим id пользователя
-app.use((req, res, next) => {
+/* app.use((req, res, next) => {
   req.user = {
     _id: '64aa010d9221495ad59171ba',
   };
   next();
-});
+}); */
 
 // роуты регистрации и авторизации
 app.post('/signin', login);
