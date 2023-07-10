@@ -1,7 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
-const cookieParser= require('cookie-parser');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 
 // порт + БД в отдельной env переменной
@@ -45,7 +45,7 @@ app.use((req, res, next) => {
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-// аутентификация/ Мидлвар сработает на роуты ниже.
+// аутентификация. Мидлвар сработает на роуты ниже (защищаем пользователей и карточки).
 app.use(auth)
 
 // слушаем роуты

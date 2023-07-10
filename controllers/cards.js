@@ -39,20 +39,30 @@ const getCards = (req, res) => {
 // удаляем карточку по id
 const deleteCard = (req, res) => {
   const { id } = req.params;
-  Card.findByIdAndRemove(id)
-    .orFail(() => Error('NotValidId'))
-    .then(() => {
-      res.send({ message: 'Карточка успешно удалена' });
-    })
-    .catch((err) => {
-      if (err.message === 'NotValidId') {
-        res.status(404).send({ message: 'Карточки с таким ID не существует' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Введены некорректные данные' });
-      } else {
-        res.status(500).send(err.message);
-      }
-    });
+  Card.findById(id)
+  .orFail(() => Error('NotValidId'))
+  .then((card) => {
+    // карточка пользователя?
+    // нет - удаление невозможно
+    if (req.user._id !== card.owner.toString()) {
+      res.status(403).send({ message: 'У вас нет прав на удалениие данной карточки' });
+    } else {
+      // если да, то удаляем карточку
+      Card.findByIdAndRemove(id)
+      .then(() => {
+        res.send({ message: 'Карточка успешно удалена' });
+      })
+    }
+  })
+  .catch((err) => {
+    if (err.message === 'NotValidId') {
+      res.status(404).send({ message: 'Карточки с таким ID не существует' });
+    } else if (err.name === 'CastError') {
+      res.status(400).send({ message: 'Введены некорректные данные' });
+    } else {
+      res.status(500).send(err.message);
+    }
+  });
 };
 
 // ставим лайк карточке

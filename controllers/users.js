@@ -25,6 +25,7 @@ const login = (req, res) => {
               // токен на 7 дней
               { expiresIn: '7d' }
             );
+            //console.log(req.user._id);// только нужный цыфры id
             // записываем токен в httpOnly кук —> отправляем на фронт токен
             res.status(200).cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true, sameSite: true }).send(user);
           } else {
@@ -46,12 +47,6 @@ const createUser = (req, res) => {
     res.status(400).send({ message: 'Обязательные поля не заполнены' });
     return;
   }
-  // проверим наличие email в базе - не работает последующее создание пользователя: в БД создается, сервер падает
-/*   User.findOne({ email })
-    .then(() => {
-      res.status(400).send({ message: 'Такой email уже зарегистрирован' });
-      return;
-    }) */
   //хэшируем пароль
   bcrypt.hash(password, 10)
     .then(hash => User.create({
@@ -80,6 +75,27 @@ const getUsers = (req, res) => {
       res.status(500).send(err.message);
     });
 };
+
+// заправшиваем авторизированного пользователя
+const getAuthUser = (req, res) => {
+  console.log("test");
+  console.log(req);
+  const id = req.user._id;
+  User.findById(id)
+  .orFail(() => Error('NotValidId'))
+  .then((user) => {
+    res.send({ data: user });
+  })
+  .catch((err) => {
+    if (err.message === 'NotValidId') {
+      res.status(404).send({ message: 'Ползователь не найден' });
+    } else if (err.name === 'CastError') {
+      res.status(400).send(err);
+    } else {
+      res.status(500).send(err);
+    }
+  });
+}
 
 // запрашиваем пользователя по id
 const getUser = (req, res) => {
@@ -143,6 +159,7 @@ const updateAvatar = (req, res) => {
 module.exports = {
   createUser,
   getUsers,
+  getAuthUser,
   getUser,
   updateUser,
   updateAvatar,
