@@ -20,28 +20,28 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       required: false,
-      /* validate: {
+      validate: {
         validator: (v) => validator.isURL(v),
         message: 'Некорректный URL',
-      }, */
+      },
       default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     },
     email: {
       type: String,
       unique: true,
       required: [true, 'Поле "email" должно быть заполнено'],
-      /* validate: {
+      validate: {
         validator: (v) => validator.isEmail(v),
         message: 'Некорректный email',
-      }, */
+      },
     },
     password: {
       type: String,
       required: [true, 'Поле "password" должно быть заполнено'],
-      /* validate: {
+      validate: {
         validator: (v) => validator.isStrongPassword(v),
         message: 'Ненадежный пароль. Пароль должен быль не менее 8 символов и содержать цифру, прописную и строчную буквы.',
-      }, */
+      },
     },
   },
   { versionKey: false },

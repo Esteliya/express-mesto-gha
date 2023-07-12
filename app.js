@@ -86,7 +86,7 @@ app.use((err, req, res, next) => {
     res.status(404).send({ message: 'Запрошены несуществующие данные' });
   } else if (err.message === 'NotData') {
     res.status(401).send({ message: 'Пользователя с таким email или паролем не существует' });
-  } else if (err.name === 'ValidationError' || err.name === 'CastError') {
+  } else if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'RangeError') {
     res.status(400).send({ message: 'Введены некорректные данные' });
   } else if (err.status === 403) {
     res.status(403).send({ message: 'Введены некорректные данные' });
