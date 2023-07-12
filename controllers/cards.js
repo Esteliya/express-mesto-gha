@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Card = require('../models/card');
 
 // создаем карточку
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;// id пользователя
 
@@ -15,29 +15,31 @@ const createCard = (req, res) => {
     .then((card) => {
       res.status(201).send({ data: card });
     })
-    .catch((err) => {
+    /* .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         res.status(400).send({ message: 'Невалидные данные' });
       } else {
         res.status(500).send(err.message);
       }
-    });
+    }); */
+    .catch(next)
 };
 
 // запрашиваем все карточки
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .populate('owner')
     .then((card) => {
       res.send({ data: card });
     })
-    .catch((err) => {
+    /* .catch((err) => {
       res.status(500).send(err.message);
-    });
+    }); */
+    .catch(next)
 };
 
 // удаляем карточку по id
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   const { id } = req.params;
   Card.findById(id)
   .orFail(() => Error('NotValidId'))
@@ -54,7 +56,7 @@ const deleteCard = (req, res) => {
       })
     }
   })
-  .catch((err) => {
+  /* .catch((err) => {
     if (err.message === 'NotValidId') {
       res.status(404).send({ message: 'Карточки с таким ID не существует' });
     } else if (err.name === 'CastError') {
@@ -62,11 +64,12 @@ const deleteCard = (req, res) => {
     } else {
       res.status(500).send(err.message);
     }
-  });
+  }); */
+  .catch(next)
 };
 
 // ставим лайк карточке
-const likeCard = (req, res) => {
+const likeCard = (req, res, next) => {
   const { id } = req.params;
   const idUser = req.user._id;
   Card.findByIdAndUpdate(id, { $addToSet: { likes: idUser } }, { new: true })
@@ -74,7 +77,7 @@ const likeCard = (req, res) => {
     .then((card) => {
       res.send({ data: card });
     })
-    .catch((err) => {
+    /* .catch((err) => {
       if (err.message === 'NotValidId') {
         res.status(404).send({ message: 'Карточки с таким ID не существует' });
       } else if (err.name === 'CastError') {
@@ -82,11 +85,12 @@ const likeCard = (req, res) => {
       } else {
         res.status(500).send(err.message);
       }
-    });
+    }); */
+    .catch(next)
 };
 
 // удаляем лайк карточки
-const deleteLikeCard = (req, res) => {
+const deleteLikeCard = (req, res, next) => {
   const { id } = req.params;
   const idUser = req.user._id;
   Card.findByIdAndUpdate(id, { $pull: { likes: idUser } }, { new: true })
@@ -94,7 +98,7 @@ const deleteLikeCard = (req, res) => {
     .then((card) => {
       res.send({ data: card });
     })
-    .catch((err) => {
+/*     .catch((err) => {
       if (err.message === 'NotValidId') {
         res.status(404).send({ message: 'Карточки с таким ID не существует' });
       } else if (err.name === 'CastError') {
@@ -102,7 +106,8 @@ const deleteLikeCard = (req, res) => {
       } else {
         res.status(500).send(err.message);
       }
-    });
+    }); */
+    .catch(next)
 };
 
 // экспорт

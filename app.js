@@ -2,6 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const { celebrate, Joi } = require('celebrate');
 const mongoose = require('mongoose');
 
 // порт + БД в отдельной env переменной
@@ -41,9 +42,25 @@ app.use(cookieParser());
   next();
 }); */
 
-// роуты регистрации и авторизации
-app.post('/signin', login);
-app.post('/signup', createUser);
+// роут авторизации
+app.post('/signin',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(8),
+    }),
+  }),
+  login);
+// роут регистрации
+app.post('/signup',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(8),
+    })
+      .unknown(true),
+  }),
+  createUser);
 
 // аутентификация. Мидлвар сработает на роуты ниже (защищаем пользователей и карточки).
 app.use(auth)
@@ -54,6 +71,30 @@ app.use('/cards', cardRouter);
 
 app.use('/*', (req, res) => {
   res.status(404).send({ message: 'Страницы не существует' });
+});
+
+// централизованный обработчик ошибок ???????
+app.use((err, req, res, next) => {
+  /* // Проверяем, является ли ошибка одной из перечисленных статусов
+  if ([400, 401, 403, 409, 500].includes(err.status)) {
+    // Отправляем соответствующий код ошибки и сообщение
+    res.status(err.status).json({ message: err.message });
+  } else {
+    next(err);
+  } */
+  if (err.message === 'NotValidId') {
+    res.status(404).send({ message: 'Запрошены несуществующие данные' });
+  } else if (err.name === 'ValidationError' || err.name === 'CastError') {
+    res.status(400).send({ message: 'Введены некорректные данные' });
+  } else if (err.status === 403) {
+    res.status(403).send({ message: 'Введены некорректные данные' });
+  } else if (err.code === 11000) {
+    res.status(409).send({ message: 'Пользователь с таким email уже зарегистрирован' });
+  } else if (err.status === 500) {
+    res.status(500).send({ message: 'На сервере произошла ошибка' });
+  } else {
+    res.status(err.status).send({ message: err.message });
+  }
 });
 
 app.listen(PORT);
