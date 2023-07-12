@@ -34,8 +34,6 @@ app.use(bodyParser.json());
 // подключаем cookie-parser (анализирует cookie и записывает данные в req.cookies)
 app.use(cookieParser());
 
-app.use(errors()); 
-
 // хардкодим id пользователя
 /* app.use((req, res, next) => {
   req.user = {
@@ -75,6 +73,7 @@ app.use('/*', (req, res) => {
   res.status(404).send({ message: 'Страницы не существует' });
 });
 
+app.use(errors());
 // централизованный обработчик ошибок ???????
 app.use((err, req, res, next) => {
   /* // Проверяем, является ли ошибка одной из перечисленных статусов
