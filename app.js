@@ -84,6 +84,8 @@ app.use((err, req, res, next) => {
   } */
   if (err.message === 'NotValidId') {
     res.status(404).send({ message: 'Запрошены несуществующие данные' });
+  } else if (err.message === 'NotData') {
+    res.status(401).send({ message: 'Пользователя с таким email или паролем не существует' });
   } else if (err.name === 'ValidationError' || err.name === 'CastError') {
     res.status(400).send({ message: 'Введены некорректные данные' });
   } else if (err.status === 403) {

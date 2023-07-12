@@ -7,7 +7,8 @@ const User = require('../models/user');
 const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email })
-    .orFail(() => new Error('Введены некорректные данные'))
+  .orFail(() => new Error('NotData'))
+    //.orFail(() => new Error('Введены некорректные данные'))
     // если email существует в базе —> пользователь в переменной user
     .then((user) => {
       // проверяем пароль
@@ -27,7 +28,7 @@ const login = (req, res, next) => {
             res.status(200).cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true, sameSite: true }).send(user);
           } else {
             //res.status(403).send({ message: 'Введены некорректные данные' });
-            next(err);
+            next(new Error('NotData'));
           }
         })
     })
