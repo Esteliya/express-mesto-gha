@@ -98,6 +98,7 @@ app.use((err, req, res, next) => {
   } else {
     res.status(err.status).send({ message: err.message });
   }
+  next();
 });
 
 app.listen(PORT);
