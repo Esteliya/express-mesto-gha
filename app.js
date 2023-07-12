@@ -2,7 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 const mongoose = require('mongoose');
 
 // порт + БД в отдельной env переменной
@@ -34,6 +34,8 @@ app.use(bodyParser.json());
 // подключаем cookie-parser (анализирует cookie и записывает данные в req.cookies)
 app.use(cookieParser());
 
+app.use(errors()); 
+
 // хардкодим id пользователя
 /* app.use((req, res, next) => {
   req.user = {
@@ -63,7 +65,7 @@ app.post('/signup',
   createUser);
 
 // аутентификация. Мидлвар сработает на роуты ниже (защищаем пользователей и карточки).
-app.use(auth)
+app.use(auth);
 
 // слушаем роуты
 app.use('/users', usersRouter);
@@ -86,7 +88,7 @@ app.use((err, req, res, next) => {
     res.status(404).send({ message: 'Запрошены несуществующие данные' });
   } else if (err.message === 'NotData') {
     res.status(401).send({ message: 'Пользователя с таким email или паролем не существует' });
-  } else if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'RangeError') {
+  } else if (err.name === 'ValidationError' || err.name === 'CastError') {
     res.status(400).send({ message: 'Введены некорректные данные' });
   } else if (err.status === 403) {
     res.status(403).send({ message: 'Введены некорректные данные' });

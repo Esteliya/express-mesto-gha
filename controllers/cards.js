@@ -13,7 +13,7 @@ const createCard = (req, res, next) => {
   }
   Card.create({ name, link, owner })
     .then((card) => {
-      res.status(201).send({ data: card });
+      res.status(201).send(card);
     })
     /* .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
@@ -30,7 +30,7 @@ const getCards = (req, res, next) => {
   Card.find({})
     .populate('owner')
     .then((card) => {
-      res.send({ data: card });
+      res.send(card);
     })
     /* .catch((err) => {
       res.status(500).send(err.message);
@@ -75,7 +75,7 @@ const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(id, { $addToSet: { likes: idUser } }, { new: true })
     .orFail(() => Error('NotValidId'))
     .then((card) => {
-      res.send({ data: card });
+      res.send(card);
     })
     /* .catch((err) => {
       if (err.message === 'NotValidId') {
@@ -96,7 +96,7 @@ const deleteLikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(id, { $pull: { likes: idUser } }, { new: true })
     .orFail(() => Error('NotValidId'))
     .then((card) => {
-      res.send({ data: card });
+      res.send(card);
     })
 /*     .catch((err) => {
       if (err.message === 'NotValidId') {

@@ -52,6 +52,9 @@ const createUser = (req, res, next) => {
     .then(hash => User.create({
       email: email,
       password: hash,
+      name,
+      about,
+      avatar,
     }))
     .then((user) => {
       res.status(201).send(user);
@@ -86,7 +89,7 @@ const getAuthUser = (req, res, next) => {
   User.findById(id)
     .orFail(() => Error('NotValidId'))
     .then((user) => {
-      res.send({ data: user });
+      res.send(user);
     })
     /* .catch((err) => {
       if (err.message === 'NotValidId') {
@@ -106,7 +109,7 @@ const getUser = (req, res, next) => {
   User.findById(id)
     .orFail(() => Error('NotValidId'))
     .then((user) => {
-      res.send({ data: user });
+      res.send(user);
     })
     /* .catch((err) => {
       if (err.message === 'NotValidId') {
