@@ -1,3 +1,4 @@
+const { celebrate, Joi } = require('celebrate');
 const router = require('express').Router();
 const {
   createCard,
@@ -8,7 +9,15 @@ const {
 } = require('../controllers/cards');
 
 // роут создания новой карточки
-router.post('/', createCard);
+router.post('/',
+celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    link: Joi.string().required().pattern(/(https?:\/\/)(w{3}\.)?([\w\W\S]{1,})#?/i),
+    // другой вариант: /(https?:\/\/)(w{3}\.)?([a-zA-Z0-9]{1,})#?/
+  }),
+}),
+createCard);
 // роут запроса карточек
 router.get('/', getCards);
 // роут запроса пользователя по id
