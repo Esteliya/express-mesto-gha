@@ -74,31 +74,15 @@ app.use('/*', (req, res) => {
 });
 
 app.use(errors());
-
 // централизованный обработчик ошибок ???????
 app.use((err, req, res, next) => {
-  // валидация JOI
-  if (err.name === 'ValidationError') {
-    res.status(400).send({ message: 'Введены невалидные данные' });
-  } else if ([400, 401, 403, 409, 500].includes(err.status)) {
-    res.status(err.status).json({ message: err.message });
-  } else if (err.status === 500) {
-    res.status(500).send({ message: 'На сервере произошла ошибка' });
-  } else {
-    res.status(err.status).send({ message: err.message });
-  }
-})
-
-
-/* app.use((err, req, res, next) => {
-  // Проверяем, является ли ошибка одной из перечисленных статусов
+  /* // Проверяем, является ли ошибка одной из перечисленных статусов
   if ([400, 401, 403, 409, 500].includes(err.status)) {
     // Отправляем соответствующий код ошибки и сообщение
     res.status(err.status).json({ message: err.message });
   } else {
     next(err);
-  }
-  // другой вариант валидации
+  } */
   if (err.message === 'NotValidId') {
     res.status(404).send({ message: 'Запрошены несуществующие данные' });
   } else if (err.message === 'NotData') {
@@ -115,6 +99,6 @@ app.use((err, req, res, next) => {
     res.status(err.status).send({ message: err.message });
   }
   next();
-}); */
+});
 
 app.listen(PORT);
