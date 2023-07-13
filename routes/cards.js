@@ -17,7 +17,7 @@ router.post(
       link: Joi.string().required().pattern(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)/),
     }),
   }),
-  createCard
+  createCard,
 );
 // роут запроса карточек
 router.get('/', getCards);
@@ -29,7 +29,7 @@ router.delete(
       id: Joi.string().hex().length(24),
     }),
   }),
-  deleteCard
+  deleteCard,
 );
 // роут лайка карточки
 router.put(
@@ -39,7 +39,7 @@ router.put(
       id: Joi.string().hex().length(24),
     }),
   }),
-  likeCard
+  likeCard,
 );
 // роут удаления лайка карточки
 router.delete(
@@ -49,7 +49,7 @@ router.delete(
       id: Joi.string().hex().length(24),
     }),
   }),
-  deleteLikeCard
+  deleteLikeCard,
 );
 
 // экспорт

@@ -43,10 +43,11 @@ app.post(
       password: Joi.string().required().min(8),
     }),
   }),
-  login
+  login,
 );
 // роут регистрации
-app.post('/signup',
+app.post(
+  '/signup',
   celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email(),
@@ -54,9 +55,10 @@ app.post('/signup',
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
       avatar: Joi.string().pattern(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)/),
-    })
+    }),
   }),
-  createUser);
+  createUser,
+);
 
 // аутентификация. Мидлвар сработает на роуты ниже (защищаем пользователей и карточки).
 app.use(auth);

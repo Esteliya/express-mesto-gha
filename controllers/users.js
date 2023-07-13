@@ -39,7 +39,7 @@ const createUser = (req, res, next) => {
     about,
     avatar,
     email,
-    password
+    password,
   } = req.body;
   // проверяем, заполнены ли поля создания пользователя
   if (!email || !password) {
@@ -48,8 +48,8 @@ const createUser = (req, res, next) => {
   }
   // хэшируем пароль
   bcrypt.hash(password, 10)
-    .then(hash => User.create({
-      email: email,
+    .then((hash) => User.create({
+      email,
       password: hash,
       name,
       about,
