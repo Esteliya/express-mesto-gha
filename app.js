@@ -2,7 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { celebrate, Joi, errors } = require('celebrate');
+const { celebrate, Joi, errors, Segments } = require('celebrate');
 const mongoose = require('mongoose');
 
 // порт + БД в отдельной env переменной
@@ -45,7 +45,7 @@ app.use(cookieParser());
 // роут авторизации
 app.post('/signin',
   celebrate({
-    body: Joi.object().keys({
+    [Segments.BODY]: Joi.object().keys({
       email: Joi.string().required().email(),
       password: Joi.string().required().min(8),
     }),
@@ -54,9 +54,12 @@ app.post('/signin',
 // роут регистрации
 app.post('/signup',
   celebrate({
-    body: Joi.object().keys({
+    [Segments.BODY]: Joi.object().keys({
       email: Joi.string().required().email(),
       password: Joi.string().required().min(8),
+      /* name: Joi.string().min(2).max(30),
+      about: Joi.string().min(2).max(30),
+      avatar: Joi.string().pattern(/(https?:\/\/)(w{3}\.)?([a-zA-Z0-9\S]{1,})#?/), */
     })
       .unknown(true),
   }),
@@ -76,6 +79,7 @@ app.use('/*', (req, res) => {
 app.use(errors());
 // централизованный обработчик ошибок ???????
 app.use((err, req, res, next) => {
+  // такой вариант
   /* // Проверяем, является ли ошибка одной из перечисленных статусов
   if ([400, 401, 403, 409, 500].includes(err.status)) {
     // Отправляем соответствующий код ошибки и сообщение
@@ -83,7 +87,8 @@ app.use((err, req, res, next) => {
   } else {
     next(err);
   } */
-  if (err.message === 'NotValidId') {
+  // еще такой вариант - почти работает
+   if (err.message === 'NotValidId') {
     res.status(404).send({ message: 'Запрошены несуществующие данные' });
   } else if (err.message === 'NotData') {
     res.status(401).send({ message: 'Пользователя с таким email или паролем не существует' });
@@ -98,6 +103,14 @@ app.use((err, req, res, next) => {
   } else {
     res.status(err.status).send({ message: err.message });
   }
+  // или такой вариант из теории ?????
+ /*  const { statusCode = 500, message } = err;
+  res.status(statusCode).send({
+    message: statusCode === 500
+      ? 'На сервере произошла ошибка'
+      : message,
+  }); */
+
   next();
 });
 
