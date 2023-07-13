@@ -8,14 +8,14 @@ const userSchema = new mongoose.Schema(
       required: false,
       minLength: [2, 'Минимальная длина поля "name" - 2'],
       maxLength: [30, 'Максимальная длина поля "name" - 30'],
-      default: "Жак-Ив Кусто",
+      default: 'Жак-Ив Кусто',
     },
     about: {
       type: String,
       required: false,
       minLength: [2, 'Минимальная длина поля "name" - 2'],
       maxLength: [30, 'Максимальная длина поля "name" - 30'],
-      default: "Исследователь",
+      default: 'Исследователь',
     },
     avatar: {
       type: String,
@@ -47,11 +47,11 @@ const userSchema = new mongoose.Schema(
   { versionKey: false },
 );
 // удаляем поле password из результата выдачи
-userSchema.methods.toJSON = function() {
+userSchema.methods.toJSON = function () {
   const user = this.toObject();
   delete user.password;
   return user;
-}
+};
 
 const User = mongoose.model('user', userSchema);
 

@@ -34,23 +34,17 @@ app.use(bodyParser.json());
 // подключаем cookie-parser (анализирует cookie и записывает данные в req.cookies)
 app.use(cookieParser());
 
-// хардкодим id пользователя
-/* app.use((req, res, next) => {
-  req.user = {
-    _id: '64aa010d9221495ad59171ba',
-  };
-  next();
-}); */
-
 // роут авторизации
-app.post('/signin',
+app.post(
+  '/signin',
   celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email(),
       password: Joi.string().required().min(8),
     }),
   }),
-  login);
+  login
+);
 // роут регистрации
 app.post('/signup',
   celebrate({
@@ -76,15 +70,8 @@ app.use('/*', (req, res) => {
 });
 
 app.use(errors());
-// централизованный обработчик ошибок ???????
+// централизованный обработчик ошибок
 app.use((err, req, res, next) => {
-  /* // Проверяем, является ли ошибка одной из перечисленных статусов
-  if ([400, 401, 403, 409, 500].includes(err.status)) {
-    // Отправляем соответствующий код ошибки и сообщение
-    res.status(err.status).json({ message: err.message });
-  } else {
-    next(err);
-  } */
   if (err.message === 'NotValidId') {
     res.status(404).send({ message: 'Запрошены несуществующие данные' });
   } else if (err.message === 'NotData') {
