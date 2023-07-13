@@ -80,6 +80,8 @@ app.use((err, req, res, next) => {
   // валидация JOI
   if (err.name === 'ValidationError') {
     res.status(400).send({ message: 'Введены невалидные данные' });
+  } else if ([400, 401, 403, 409, 500].includes(err.status)) {
+    res.status(err.status).json({ message: err.message });
   } else if (err.status === 500) {
     res.status(500).send({ message: 'На сервере произошла ошибка' });
   } else {
