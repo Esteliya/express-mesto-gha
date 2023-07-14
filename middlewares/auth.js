@@ -7,7 +7,7 @@ const auth = (req, res, next) => {
   const token = req.cookies.jwt;
   let payload;
   try {
-    // секретный ключ — перенести в .env!!! Пока тесты падают!!
+    // секретный ключ — перенесли в .env
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     res.status(401).send({ message: err.message });
