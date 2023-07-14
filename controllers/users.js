@@ -16,8 +16,8 @@ const login = (req, res, next) => {
             // если валидный пароль —> создадим jwt токен на 7 дней
             const token = jwt.sign(
               { _id: user._id },
-              // секретный ключ — перенести!!!
-              'super-strong-secret',
+              // секретный ключ — перенесkb в переменные окружения
+              process.env['JWT_SECRET'],
               // токен на 7 дней
               { expiresIn: '7d' },
             );

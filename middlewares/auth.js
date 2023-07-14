@@ -4,7 +4,7 @@ const auth = (req, res, next) => {
   const token = req.cookies.jwt;
   let payload;
   try {
-    payload = jwt.verify(token, 'super-strong-secret');
+    payload = jwt.verify(token, process.env['JWT_SECRET']);
   } catch (err) {
     res.status(401).send({ message: err.message });
   }
