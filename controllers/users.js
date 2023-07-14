@@ -1,10 +1,13 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+// достаем секретный ключ в отдельной env переменной, либо альтернативный, если нет .env
+const { JWT_SECRET = 'test-secret' } = process.env;
 
 // контроллер аутентификации
 const login = (req, res, next) => {
   const { email, password } = req.body;
+  console.log(JWT_SECRET);
   User.findOne({ email })
     .orFail(() => new Error('NotData'))
     // если email существует в базе —> пользователь в переменной user
@@ -16,8 +19,8 @@ const login = (req, res, next) => {
             // если валидный пароль —> создадим jwt токен на 7 дней
             const token = jwt.sign(
               { _id: user._id },
-              // секретный ключ — перенесли в переменные окружения
-              process.env.JWT_SECRET,
+              // секретный ключ — перенести в .env!!! Пока тесты падают!!
+              JWT_SECRET,
               // токен на 7 дней
               { expiresIn: '7d' },
             );

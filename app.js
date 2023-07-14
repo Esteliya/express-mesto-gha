@@ -9,7 +9,12 @@ const mongoose = require('mongoose');
 
 // порт + БД в отдельной env переменной
 // создаем новую БД, т.к. не отрабатывает проверка email на уникальность. Теперь ок.
-const { PORT = 3000, DB_URL = 'mongodb://localhost:27017/mestodb_new' } = process.env;
+const {
+  NODE_ENV = 'development',
+  DB_PRODUCTION,
+  PORT = 3000,
+  DB_URL = 'mongodb://localhost:27017/mestodb_new',
+} = process.env;
 
 const app = express();
 
@@ -23,7 +28,7 @@ const { login, createUser } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
 
 // дружим
-mongoose.connect(DB_URL, {
+mongoose.connect(NODE_ENV === 'production' ? DB_PRODUCTION : DB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   autoIndex: true,
