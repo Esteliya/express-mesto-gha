@@ -17,7 +17,7 @@ const login = (req, res, next) => {
             const token = jwt.sign(
               { _id: user._id },
               // секретный ключ — перенесли в переменные окружения
-              process.env['JWT_SECRET'],
+              process.env.JWT_SECRET,
               // токен на 7 дней
               { expiresIn: '7d' },
             );
