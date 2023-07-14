@@ -7,10 +7,9 @@ const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
 const mongoose = require('mongoose');
 
-// порт + БД + секретный ключ в отдельной env переменной. При переносе в файл .env(+ .gitignor) падают автотесты. Пока здесь.
+// порт + БД в отдельной env переменной
 // создаем новую БД, т.к. не отрабатывает проверка email на уникальность. Теперь ок.
 const { PORT = 3000, DB_URL = 'mongodb://localhost:27017/mestodb_new' } = process.env;
-const {JWT_SECRET = 'super-strong-secret' } = process.env;
 
 const app = express();
 
