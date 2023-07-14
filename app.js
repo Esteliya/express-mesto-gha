@@ -1,13 +1,11 @@
+// подключаем переменные окружения
+require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
 const mongoose = require('mongoose');
-
-// порт + БД в отдельной env переменной
-// создаем новую БД, т.к. не отрабатывает проверка email на уникальность. Теперь ок.
-const { PORT = 3000, DB_URL = 'mongodb://localhost:27017/mestodb_new' } = process.env;
 
 const app = express();
 
@@ -21,7 +19,7 @@ const { login, createUser } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
 
 // дружим
-mongoose.connect(DB_URL, {
+mongoose.connect(process.env['DB_URL'], {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   autoIndex: true,
@@ -92,4 +90,4 @@ app.use((err, req, res, next) => {
   next();
 });
 
-app.listen(PORT);
+app.listen(process.env['PORT']);
